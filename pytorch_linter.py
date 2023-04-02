@@ -15,8 +15,17 @@ class DDPImportChecker(BaseChecker):
                 "ddp-import-uncommon-name",
                 "Import DistributedDataParrallel as DDP",
                 ),
+            "C4402": (
+                "Torch DataParallel is not recommended for single machine multi-GPU anymore",
+                "data-parallel-import",
+                "It is recommended to use DataDistributedParallel rather than DataParallel",
+                ),
             }
     options = {}
+
+    def visit_import(self, node: astroid.Import):
+        pass
+
 
     def visit_importfrom(self, node:astroid.ImportFrom):
         if node.modname == "torch.nn.parallel":
@@ -24,6 +33,8 @@ class DDPImportChecker(BaseChecker):
                 if name == "DistributedDataParallel":
                     if alias != "DDP":
                         self.add_message("ddp-import-uncommon-name", node=node)
+                elif name == "DataParallel":
+                    self.add_message("data-parallel-import", node=node)
 
 def register(linter: PyLinter) -> None:
     """This required method auto registers the checker during initialization.
