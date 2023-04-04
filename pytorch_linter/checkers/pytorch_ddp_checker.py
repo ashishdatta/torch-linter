@@ -88,16 +88,14 @@ class PyTorchDDPConfigChecker(BaseChecker):
     def leave_module(self, node):
         """After leaving a module, check if a corresponding destroy_process_group() call was made after init_process_group() call was made.
         """
-        for child in node.body:#.get_children():
+        for child in node.get_children():
             found_destroy_process_group = False
             if isinstance(child, astroid.FunctionDef):
                 for subchild in child.body:
                     if isinstance(subchild, astroid.Expr) and \
                         isinstance(subchild.value, astroid.Call) and \
                         isinstance(subchild.value.func, astroid.Attribute) and \
-                        subchild.value.func.attrname == 'destroy_process_group' and \
-                        isinstance(subchild.value.func.expr, astroid.Name) and \
-                        subchild.value.func.expr.name == 'dist' and \
+                        subchild.value.func.attrname == 'destory_process_group' and \
                         self._init_process_group_lineno != 0:
                         found_destroy_process_group = True
                         break
