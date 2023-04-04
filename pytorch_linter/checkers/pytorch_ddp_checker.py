@@ -75,7 +75,7 @@ class PyTorchDDPConfigChecker(BaseChecker):
                 self.add_message('ddp-backend', node=node)
             if 'init_method' not in [arg.arg for arg in node.keywords]:
                 self.add_message('ddp-init-method', node=node)
-            if 'rank' not in [arg.name for arg in node.args] and 'world_size' not in [arg.name for arg in node.args]:
+            if 'rank' not in [arg.arg for arg in node.keywords] or 'world_size' not in [arg.arg for arg in node.keywords]:
                 self.add_message('ddp-rank-world-size', node=node)
 
         if isinstance(node.func, astroid.Attribute) and node.func.attrname == 'DistributedDataParallel' and node.func.expr.name == 'torch.nn.parallel':
