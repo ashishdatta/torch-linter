@@ -71,8 +71,6 @@ class PyTorchDDPConfigChecker(BaseChecker):
         """
         if isinstance(node.func, astroid.Attribute) and node.func.attrname == 'init_process_group':
             self._init_process_group_lineno = node.lineno
-            if 'device_ids' not in [arg.arg for arg in node.keywords]:
-                self.add_message('ddp-device-id', node=node)
             if 'backend' not in [arg.arg for arg in node.keywords]:
                 self.add_message('ddp-backend', node=node)
             if 'init_method' not in [arg.arg for arg in node.keywords]:
@@ -105,7 +103,3 @@ class PyTorchDDPConfigChecker(BaseChecker):
                         break
                 if not found_destroy_process_group:
                     self.add_message('ddp-destroy-process-group-not-called', node=node)
-
-def register(linter):
-    linter.register_checker(PyTorchDataParallelChecker(linter))
-    linter.register_checker(PyTorchDDPConfigChecker(linter))
